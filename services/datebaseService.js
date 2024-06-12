@@ -11,7 +11,8 @@ const databaseService = () => {
     });
 
     const table = 'usuarios';
-    const table2 = 'productosp'
+    const table2 = 'productosp';
+    const table3 = 'miembrosEmpresa'
 
     const crearUser = ({nombre,correo, contraseña}) => {
         return knex(table).insert({
@@ -34,6 +35,13 @@ const databaseService = () => {
         return knex(table2).select();
     }
 
+    const buscarProductoPorId = (id) => {
+        return knex(table2)
+                .where('id', id)
+                .first(); // Para obtener solo el primer resultado (debería ser único por ID)
+    }
+    
+
     const mostrarUser = () => {
         return knex(table).select();
     }
@@ -42,7 +50,8 @@ const databaseService = () => {
         crearUser,
         mostrarUser,
         crearProducto,
-        mostrarProductos
+        mostrarProductos,
+        buscarProductoPorId
     };
 };
 

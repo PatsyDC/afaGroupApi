@@ -1,6 +1,7 @@
 require('dotenv').config() //inicializar
 const multer = require('multer');
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const {databaseService} = require('./services/datebaseService');
 const {dirname, extname, join} = require('path');
@@ -32,6 +33,7 @@ const multerUpload = multer({
 });
 
 const app =express();
+app.use(cors());
 
 app.post('/upload', multerUpload.single('file'), (req, res) => {
     console.log(req.file);

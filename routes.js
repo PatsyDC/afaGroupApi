@@ -35,6 +35,21 @@ module.exports = function(app, databaseService){
         });
     });
 
+    app.get('/productosP/:id', (req, res) => {
+        const idProducto = req.params.id; // Captura el parámetro ID de la URL
+        databaseService.buscarProductoPorId(idProducto) // Llama a la función para buscar por ID
+            .then(producto => {
+                if (!producto) { // Si no se encuentra el producto
+                    res.status(404).json({ mensaje: 'Producto no encontrado' });
+                } else {
+                    res.json(producto); // Si se encuentra, envía el producto como respuesta
+                }
+            }).catch(e => {
+                res.status(500).json({ error: e.message }); // Maneja errores internos del servidor
+            });
+    });
+    
+
     app.post('/productosP',(req, res) =>{
         const nuevoProducto = req.body;
         console.log(nuevoProducto);
