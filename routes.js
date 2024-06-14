@@ -4,6 +4,8 @@ module.exports = function(app, databaseService){
         res.json({"mensaje": "hi"});
     });
 
+    // USUARIOS
+
     app.get('/usuarios',(req, res) =>{
         databaseService.mostrarUser()
         .then(users =>{
@@ -25,6 +27,8 @@ module.exports = function(app, databaseService){
         });
         
     });
+
+    //PRODUCTOS
 
     app.get('/productosP',(req, res) =>{
         databaseService.mostrarProductos()
@@ -62,4 +66,30 @@ module.exports = function(app, databaseService){
         });
         
     })
+
+    //MIEMBROS DE LA EMPRESA
+
+    app.get('/miembrosE',(req, res) =>{
+        databaseService.mostrarMiembrosE()
+        .then(miembros =>{
+            res.json(miembros);
+        }).catch(e => { // corregido
+            res.status(500).json(e);
+        });
+    });
+
+    app.post('/miembrosE',(req, res) =>{
+        const nuevoMiembro = req.body;
+        console.log(nuevoMiembro);
+
+        databaseService.crearMiembroE(nuevoMiembro)
+        .then(() => { //despues de la escritura en la bd se muestar el lenguake
+            res.json({"mensaje": "nuevo user"});
+        }).catch(e => { // corregido
+            res.status(500).json(e);
+        });
+        
+    });
+
+
 };

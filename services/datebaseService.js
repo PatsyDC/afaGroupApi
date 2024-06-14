@@ -14,6 +14,9 @@ const databaseService = () => {
     const table2 = 'productosp';
     const table3 = 'miembrosEmpresa'
 
+
+    // CREARRR
+
     const crearUser = ({nombre,correo, contraseña}) => {
         return knex(table).insert({
             nombre: nombre,
@@ -31,10 +34,30 @@ const databaseService = () => {
         }); //retorna una promesa
     };
 
+    const crearMiembroE = ({img, nombre, cargo}) => {
+        return knex(table3).insert({
+            img: img,
+            nombre: nombre,
+            cargo: cargo
+        });
+    };
+
+    //mostrar 
+
     const mostrarProductos = () => {
         return knex(table2).select();
     }
 
+    const mostrarUser = () => {
+        return knex(table).select();
+    }
+
+    const mostrarMiembrosE = () => {
+        return knex(table3).select();
+    }
+
+
+    //detalles
     const buscarProductoPorId = (id) => {
         return knex(table2)
                 .where('id', id)
@@ -42,16 +65,16 @@ const databaseService = () => {
     }
     
 
-    const mostrarUser = () => {
-        return knex(table).select();
-    }
+    
 
     return{
         crearUser,
         mostrarUser,
         crearProducto,
         mostrarProductos,
-        buscarProductoPorId
+        buscarProductoPorId,
+        crearMiembroE,
+        mostrarMiembrosE
     };
 };
 
