@@ -12,8 +12,9 @@ const databaseService = () => {
 
     const table = 'usuarios';
     const table2 = 'productosp';
-    const table3 = 'miembrosEmpresa'
-
+    const table3 = 'miembrosEmpresa';
+    const table4 = 'slider';
+    const table5 = "categorias"
 
     // CREARRR
 
@@ -25,12 +26,13 @@ const databaseService = () => {
         }); //retorna una promesa
     };
 
-    const crearProducto = ({img, nombre, descripcion, precio}) => {
+    const crearProducto = ({img, nombre, descripcion, precio, categoria_id}) => {
         return knex(table2).insert({
             img: img,
             nombre: nombre,
             descripcion: descripcion,
-            precio: precio
+            precio: precio,
+            categoria_id: categoria_id
         }); //retorna una promesa
     };
 
@@ -41,6 +43,22 @@ const databaseService = () => {
             cargo: cargo
         });
     };
+
+    const crearSlider = ({img, texto1, texto_central, texto2}) => {
+        return knex(table4).insert({
+            img: img,
+            texto1: texto1,
+            texto_central: texto_central,
+            texto2: texto2
+        });
+    };
+
+    const crearCategoria = ({nombre, descripcion}) => {
+        return knex(table5).insert({
+            nombre: nombre,
+            descripcion: descripcion
+        })
+    }
 
     //mostrar 
 
@@ -54,6 +72,14 @@ const databaseService = () => {
 
     const mostrarMiembrosE = () => {
         return knex(table3).select();
+    }
+
+    const mostrarSlider = () => {
+        return knex(table4).select();
+    }
+
+    const mostrarCategoria = () => {
+        return knex(table5).select();
     }
 
 
@@ -74,7 +100,11 @@ const databaseService = () => {
         mostrarProductos,
         buscarProductoPorId,
         crearMiembroE,
-        mostrarMiembrosE
+        mostrarMiembrosE,
+        crearSlider,
+        mostrarSlider,
+        mostrarCategoria,
+        crearCategoria
     };
 };
 

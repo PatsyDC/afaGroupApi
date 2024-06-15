@@ -28,6 +28,30 @@ module.exports = function(app, databaseService){
         
     });
 
+    //CATEGORIAS
+
+    app.get('/categorias', (req, res) => {
+        databaseService.mostrarCategoria()
+        .then(categorias => {
+            res.json(categorias);
+        }).catch(e => { // corregido
+            res.status(500).json(e);
+        });
+    });
+
+    app.post('/categorias',(req, res) =>{
+        const newCategoria = req.body;
+        console.log(newCategoria);
+
+        databaseService.crearCategoria(newCategoria)
+        .then(() => { //despues de la escritura en la bd se muestar 
+            res.json({"mensaje": "nueva categoria"});
+        }).catch(e => { // corregido
+            res.status(500).json(e);
+        });
+        
+    });
+
     //PRODUCTOS
 
     app.get('/productosP',(req, res) =>{
@@ -90,6 +114,30 @@ module.exports = function(app, databaseService){
         });
         
     });
+
+    //SLIDER
+    
+app.get('/slider', (req, res) => {
+    databaseService.mostrarSlider()
+    .then(slider => {
+        res.json(slider);
+    })
+    .catch(e => {
+        res.status(500).json(e);
+    });
+});
+
+app.post('/slider', (req, res) => {
+    const newSlider = req.body;
+    console.log(newSlider);
+    databaseService.crearSlider(newSlider)
+    .then(() => {
+        res.json({ mensaje: "nuevo slider" });
+    })
+    .catch(e => {
+        res.status(500).json(e);
+    });
+});
 
 
 };
