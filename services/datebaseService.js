@@ -14,7 +14,8 @@ const databaseService = () => {
     const table2 = 'productosp';
     const table3 = 'miembrosEmpresa';
     const table4 = 'slider';
-    const table5 = "categorias"
+    const table5 = "categorias";
+    const table6 = "repuestos"
 
     // CREARRR
 
@@ -60,6 +61,15 @@ const databaseService = () => {
         })
     }
 
+    const crearRepuesto = ({img, nombre, categoria_id, descripcion, precio}) => {
+        return knex(table6).insert({
+            img: img,
+            nombre: nombre,
+            categoria_id: categoria_id,
+            descripcion: descripcion,
+            precio: precio
+        })
+    }
     //mostrar 
 
     const mostrarProductos = () => {
@@ -81,6 +91,9 @@ const databaseService = () => {
     const mostrarCategoria = () => {
         return knex(table5).select();
     }
+    const mostrarRepuesto = () => {
+        return knex(table6).select()
+    }
 
 
     //detalles
@@ -89,7 +102,11 @@ const databaseService = () => {
                 .where('id', id)
                 .first(); // Para obtener solo el primer resultado (debería ser único por ID)
     }
-    
+
+    const repuestoId = (id) => {
+        return knex(table6)
+        .where('id', id)
+    }
 
     
 
@@ -104,7 +121,10 @@ const databaseService = () => {
         crearSlider,
         mostrarSlider,
         mostrarCategoria,
-        crearCategoria
+        crearCategoria,
+        mostrarRepuesto,
+        crearRepuesto,
+        repuestoId
     };
 };
 

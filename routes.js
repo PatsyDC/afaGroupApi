@@ -117,27 +117,64 @@ module.exports = function(app, databaseService){
 
     //SLIDER
     
-app.get('/slider', (req, res) => {
-    databaseService.mostrarSlider()
-    .then(slider => {
-        res.json(slider);
-    })
-    .catch(e => {
-        res.status(500).json(e);
+    app.get('/slider', (req, res) => {
+        databaseService.mostrarSlider()
+        .then(slider => {
+            res.json(slider);
+        })
+        .catch(e => {
+            res.status(500).json(e);
+        });
     });
-});
 
-app.post('/slider', (req, res) => {
-    const newSlider = req.body;
-    console.log(newSlider);
-    databaseService.crearSlider(newSlider)
-    .then(() => {
-        res.json({ mensaje: "nuevo slider" });
-    })
-    .catch(e => {
-        res.status(500).json(e);
+    app.post('/slider', (req, res) => {
+        const newSlider = req.body;
+        console.log(newSlider);
+        databaseService.crearSlider(newSlider)
+        .then(() => {
+            res.json({ mensaje: "nuevo slider" });
+        })
+        .catch(e => {
+            res.status(500).json(e);
+        });
     });
-});
+
+    //REPUESTOS
+    app.get('/repuestos', (req, res) => {
+        databaseService.mostrarRepuesto()
+        .then(repuesto => {
+            res.json(repuesto);
+        })
+        .catch(e => {
+            res.status(500).json(e);
+        });
+    });
+
+    app.post('/repuestos', (req, res) => {
+        const newRepuestos = req.body;
+        console.log(newRepuestos);
+        databaseService.crearRepuesto(newRepuestos)
+        .then(() => {
+            res.json({ mensaje: "nuevo repuesto" });
+        })
+        .catch(e => {
+            res.status(500).json(e);
+        });
+    });
+
+    app.get('/repuestos/:id', (req, res) => {
+        const idRepuesto = req.params.id; // Captura el parámetro ID de la URL
+        databaseService.repuestoId(idRepuesto) // Llama a la función para buscar por ID
+            .then(repuesto => {
+                if (!repuesto) { // Si no se encuentra el repuesto
+                    res.status(404).json({ mensaje: 'repuesto no encontrado' });
+                } else {
+                    res.json(repuesto); // Si se encuentra, envía el producto como respuesta
+                }
+            }).catch(e => {
+                res.status(500).json({ error: e.message }); // Maneja errores internos del servidor
+            });
+    });
 
 
 };
