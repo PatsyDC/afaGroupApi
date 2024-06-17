@@ -176,5 +176,28 @@ module.exports = function(app, databaseService){
             });
     });
 
+    //contactanos 
+
+    app.get('/contactanos', (req, res) => {
+        databaseService.mostrarContactanos()
+        .then(mensajeC => {
+            res.json(mensajeC);
+        })
+        .catch(e => {
+            res.status(500).json(e);
+        });
+    });
+
+    app.post('/contactanos', (req, res) => {
+        const newMensajeC = req.body;
+        console.log(newMensajeC);
+        databaseService.crearContacto(newMensajeC)
+        .then(() => {
+            res.json({ mensaje: "Se registro un nuevo mensaje" });
+        })
+        .catch(e => {
+            res.status(500).json(e);
+        });
+    });
 
 };

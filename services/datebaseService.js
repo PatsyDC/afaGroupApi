@@ -16,6 +16,7 @@ const databaseService = () => {
     const table4 = 'slider';
     const table5 = "categorias";
     const table6 = "repuestos"
+    const table7 = "contacto"
 
     // CREARRR
 
@@ -70,6 +71,16 @@ const databaseService = () => {
             precio: precio
         })
     }
+
+    const crearContacto = ({nombre, email, celular, ciudad, mensaje}) => {
+        return knex(table7).insert({
+            nombre: nombre,
+            email: email,
+            celular: celular,
+            ciudad: ciudad,
+            mensaje:mensaje
+        })
+    }
     //mostrar 
 
     const mostrarProductos = () => {
@@ -95,6 +106,9 @@ const databaseService = () => {
         return knex(table6).select()
     }
 
+    const mostrarContactanos = () => {
+        return knex(table7).select
+    }
 
     //detalles
     const buscarProductoPorId = (id) => {
@@ -124,7 +138,9 @@ const databaseService = () => {
         crearCategoria,
         mostrarRepuesto,
         crearRepuesto,
-        repuestoId
+        repuestoId,
+        crearContacto,
+        mostrarContactanos
     };
 };
 
