@@ -139,6 +139,20 @@ module.exports = function(app, databaseService){
         });
     });
 
+    app.get('/slider/:id', (req, res) => {
+        const idslider = req.params.id; // Captura el parámetro ID de la URL
+        databaseService.sliderDetalle(idslider) // Llama a la función para buscar por ID
+            .then(slider => {
+                if (!slider) { // Si no se encuentra el slider
+                    res.status(404).json({ mensaje: 'slider no encontrado' });
+                } else {
+                    res.json(slider); // Si se encuentra, envía el producto como respuesta
+                }
+            }).catch(e => {
+                res.status(500).json({ error: e.message }); // Maneja errores internos del servidor
+            });
+    });
+
     //REPUESTOS
     app.get('/repuestos', (req, res) => {
         databaseService.mostrarRepuesto()
@@ -200,4 +214,41 @@ module.exports = function(app, databaseService){
         });
     });
 
+    //carrito
+
+    app.get('/carrito', (req, res) => {
+        databaseService.mostrarCarrito()
+        .then(carrito => {
+            res.json(carrito);
+        })
+        .catch(e => {
+            res.status(500).json(e);
+        });
+    });
+
+    app.post('/productosP/carrito', (req, res) => {
+        const newCarrito = req.body;
+        console.log(newCarrito);
+        databaseService.crearCarrito(newCarrito)
+        .then(() => {
+            res.json({ mensaje: "nuevo carrito" });
+        })
+        .catch(e => {
+            res.status(500).json(e);
+        });
+    });
+
+    app.get('/carrito/:id', (req, res) => {
+        const idCarrito = req.params.id; // Captura el parámetro ID de la URL
+        databaseService.detalleCarrito(idCarrito) // Llama a la función para buscar por ID
+            .then(carrito => {
+                if (!carrito) { // Si no se encuentra el carrito
+                    res.status(404).json({ mensaje: 'carrito no encontrado' });
+                } else {
+                    res.json(carrito); // Si se encuentra, envía el producto como respuesta
+                }
+            }).catch(e => {
+                res.status(500).json({ error: e.message }); // Maneja errores internos del servidor
+            });
+    });
 };
