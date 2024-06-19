@@ -63,13 +63,13 @@ const databaseService = () => {
         })
     }
 
-    const crearRepuesto = ({img, nombre, categoria_id, descripcion, precio}) => {
+    const crearRepuesto = ({img, nombre, categoria_id, descripcion, cantidad}) => {
         return knex(table6).insert({
             img: img,
             nombre: nombre,
             categoria_id: categoria_id,
             descripcion: descripcion,
-            precio: precio
+            cantidad: cantidad
         })
     }
 
@@ -83,13 +83,13 @@ const databaseService = () => {
         })
     }
 
-    const crearCarrito = ({ id_product, img_product, nombre_product, precio_product, total_product }) =>{
+    const crearCarrito = ({ id_product, img_product, nombre_product, precio_product, cantidad }) =>{
         return knex(table8).insert({
             id_product: id_product,
             img_product: img_product,
             nombre_product: nombre_product,
             precio_product: precio_product,
-            total_product: total_product
+            cantidad: cantidad
         })
     }
     //mostrar 
@@ -147,6 +147,16 @@ const databaseService = () => {
         .where('id', id)
     }
 
+    //actualizar
+
+    const actualizarCarrito = (idCarrito, updatedCarrito) => {
+        return knex(table8)
+          .where('id', idCarrito)
+          .update(updatedCarrito);
+    };
+    
+    
+
     
 
     return{
@@ -169,7 +179,8 @@ const databaseService = () => {
         mostrarContactanos,
         crearCarrito,
         mostrarCarrito,
-        detalleCarrito
+        detalleCarrito,
+        actualizarCarrito 
     };
 };
 

@@ -237,7 +237,7 @@ module.exports = function(app, databaseService){
             res.status(500).json(e);
         });
     });
-
+    
     app.get('/carrito/:id', (req, res) => {
         const idCarrito = req.params.id; // Captura el parámetro ID de la URL
         databaseService.detalleCarrito(idCarrito) // Llama a la función para buscar por ID
@@ -251,4 +251,19 @@ module.exports = function(app, databaseService){
                 res.status(500).json({ error: e.message }); // Maneja errores internos del servidor
             });
     });
+
+    app.put('/carrito/:id', (req, res) => {
+        const idCarrito = req.params.id; // Captura el parámetro ID de la URL
+        const updatedCarrito = req.body; // Obtiene los datos actualizados desde el cuerpo de la solicitud
+    
+        databaseService.actualizarCarrito(idCarrito, updatedCarrito) // Llama a la función para actualizar el carrito
+            .then(() => {
+                res.json({ mensaje: "carrito actualizado exitosamente" });
+            }).catch(e => {
+                res.status(500).json({ error: e.message }); // Maneja errores internos del servidor
+            });
+    });
+    
+
+
 };
