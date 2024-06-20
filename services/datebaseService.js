@@ -151,8 +151,8 @@ const databaseService = () => {
 
     const actualizarCarrito = (idCarrito, updatedCarrito) => {
         return knex(table8)
-          .where('id', idCarrito)
-          .update(updatedCarrito);
+        .where('id', idCarrito)
+        .update(updatedCarrito);
     };
     
     
