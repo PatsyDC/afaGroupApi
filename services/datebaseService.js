@@ -29,7 +29,7 @@ const databaseService = () => {
         }); //retorna una promesa
     };
 
-    const crearProducto = ({img, nombre, descripcion, precio, categoria_id}) => { 
+    const crearProducto = ({img, nombre, descripcion, precio, categoria_id, ficha_p, pdf}) => { 
         return knex(table2).insert({
             img: img,
             nombre: nombre,
