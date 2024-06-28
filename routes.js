@@ -319,6 +319,17 @@ module.exports = function(app, databaseService){
             });
     });
 
+    app.delete('/repuestos/:id', (req, res) => {
+        const { id } = req.params;
+
+        databaseService.eliminarRepuesto(id)
+        .then(() => {
+            res.json({"mensaje": "repuesto eliminado"});
+        }).catch(e => {
+            res.status(500).json(e);
+        });
+    });
+
     //contactanos 
 
     app.get('/contactanos', (req, res) => {

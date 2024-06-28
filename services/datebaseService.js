@@ -71,7 +71,6 @@ const databaseService = () => {
             nombre: nombre,
             categoria_id: categoria_id,
             descripcion: descripcion,
-            cantidad: cantidad
         })
     }
 
@@ -195,6 +194,10 @@ const databaseService = () => {
     const eliminarProducto = (id) => {
         return knex(table2).where({ id: id }).del();
     }
+
+    const eliminarRepuesto = (id) => {
+        return knex(table6).where({ id: id }).del();
+    }
     
 
     
@@ -218,9 +221,12 @@ const databaseService = () => {
         crearCategoria,
         actualizarCategoria,
         eliminarCategoria,
+
         mostrarRepuesto,
         crearRepuesto,
         repuestoId,
+        eliminarRepuesto,
+
         crearContacto,
         mostrarContactanos,
         crearCarrito,
