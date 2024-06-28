@@ -65,12 +65,14 @@ const databaseService = () => {
         })
     }
 
-    const crearRepuesto = ({img, nombre, categoria_id, descripcion, cantidad}) => {
+    const crearRepuesto = ({img, nombre, categoria_id, descripcion, precio, codigo}) => {
         return knex(table6).insert({
             img: img,
-            nombre: nombre,
+            nombre: nombre, 
             categoria_id: categoria_id,
-            descripcion: descripcion,
+            descripcion: descripcion, 
+            precio: precio,
+            codigo: codigo 
         })
     }
 
@@ -163,17 +165,18 @@ const databaseService = () => {
         });
     }
 
-    const actualizarRepuesto = ({id, img, nombre, categoria_id, descripcion, cantidad}) => {
+    const actualizarRepuesto = (img, nombre, categoria_id, descripcion, precio, codigo) => {
         return knex(table6).where({ id: id }).update({
             img: img,
             nombre: nombre,
             categoria_id: categoria_id,
             descripcion: descripcion,
-            cantidad: cantidad
+            precio: precio,
+            codigo: codigo
         })
     }
 
-    const actualizarProducto = ({id, img, nombre, descripcion, precio, categoria_id, ficha_p, pdf}) => {
+    const actualizarProducto = (id, img, nombre, descripcion, precio, categoria_id, ficha_p, pdf) => {
         return knex(table2).where({ id: id }).update({
             img: img,
             nombre: nombre,
@@ -226,6 +229,7 @@ const databaseService = () => {
         crearRepuesto,
         repuestoId,
         eliminarRepuesto,
+        actualizarRepuesto,
 
         crearContacto,
         mostrarContactanos,

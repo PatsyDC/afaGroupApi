@@ -168,6 +168,7 @@ module.exports = function(app, databaseService){
         if (req.body.descripcion) productoActualizado.descripcion = req.body.descripcion;
         if (req.body.precio) productoActualizado.precio = req.body.precio;
         if (req.body.categoria_id) productoActualizado.categoria_id = req.body.categoria_id;
+        if (req.body.pdf) productoActualizado.pdf = req.body.pdf;
     
         // Agregar las rutas de los archivos si fueron proporcionados
         if (imgFilename) {
@@ -191,9 +192,8 @@ module.exports = function(app, databaseService){
                 res.status(500).json({ error: e.message });
             });
     });
-    
-    
 
+    
     app.delete('/productosP/:id', (req, res) => {
         const { id } = req.params;
 
@@ -330,6 +330,53 @@ module.exports = function(app, databaseService){
         });
     });
 
+    app.put('/repuestos/:id', afa, (req, res) => {
+        const repuestoId = req.params.id;
+    
+        // Verificar si hay archivos subidos
+        let imgFilename, ficha_pFilename;
+        if (req.files && req.files['img']) {
+            imgFilename = req.files['img'][0].filename;
+        }
+    
+        // Construir el objeto del repuesto actualizado
+        const repuestoActualizado = {};
+    
+        // Agregar los datos del cuerpo de la solicitud al objeto
+        if (req.body.nombre) repuestoActualizado.nombre = req.body.nombre;
+        if (req.body.descripcion) repuestoActualizado.descripcion = req.body.descripcion;
+        if (req.body.precio) repuestoActualizado.precio = req.body.precio;
+        if (req.body.categoria_id) repuestoActualizado.categoria_id = req.body.categoria_id;
+        if (req.body.codigo) repuestoActualizado.codigo = req.body.codigo;
+    
+        // Agregar las rutas de los archivos si fueron proporcionados
+        if (imgFilename) {
+            repuestoActualizado.img = `/uploads/${imgFilename}`;
+        }
+    
+        // Verificar si hay datos para actualizar
+        if (Object.keys(repuestoActualizado).length === 0) {
+            return res.status(400).json({ error: "No hay datos para actualizar" });
+        }
+    
+        // Actualizar en la base de datos
+        actualizarRepuesto(
+            repuestoActualizado.img,
+            repuestoActualizado.nombre,
+            repuestoActualizado.categoria_id,
+            repuestoActualizado.descripcion,
+            repuestoActualizado.precio,
+            repuestoActualizado.codigo,
+            repuestoId
+        )
+        .then(() => {
+            res.json({ mensaje: "Repuesto actualizado con éxito" });
+        })
+        .catch(e => {
+            res.status(500).json({ error: e.message });
+        });
+    });
+    
     //contactanos 
 
     app.get('/contactanos', (req, res) => {
