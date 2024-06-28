@@ -1,4 +1,23 @@
 module.exports = function(app, databaseService){
+    const multer = require('multer');
+    const path = require('path'); // Importamos el módulo 'path'
+
+    // Configuración de almacenamiento
+    const storage = multer.diskStorage({
+        destination: 'uploads/',
+        filename: (req, file, cb) => {
+          // Corrección: Aseguramos la extensión original
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)); 
+        }
+    });
+      
+    const upload = multer({ storage: storage });
+
+    const afa = upload.fields([
+    { name: 'img', maxCount: 1 }, 
+    { name: 'ficha_p', maxCount: 1 }
+    ]);
 
     app.get('/', (req, res) =>{
         res.json({"mensaje": "hi"});
@@ -52,6 +71,30 @@ module.exports = function(app, databaseService){
         
     });
 
+    app.delete('/categorias/:id', (req, res) => {
+        const { id } = req.params;
+
+        databaseService.eliminarCategoria(id)
+        .then(() => {
+            res.json({"mensaje": "categoria eliminada"});
+        }).catch(e => {
+            res.status(500).json(e);
+        });
+    });
+
+    app.put('/categorias/:id', (req, res) => {
+        const { id } = req.params;
+        const updatedCategoria = req.body;
+    
+        databaseService.actualizarCategoria({ id, ...updatedCategoria })
+        .then(() => {
+            res.json({"mensaje": "categoria actualizada"});
+        }).catch(e => {
+            console.error("Error updating category:", e);
+            res.status(500).json({ error: "Internal Server Error", details: e });
+        });
+    });
+
     //PRODUCTOS
 
     app.get('/productosP',(req, res) =>{
@@ -77,19 +120,57 @@ module.exports = function(app, databaseService){
             });
     });
     
-
-    app.post('/productosP',(req, res) =>{
-        const nuevoProducto = req.body;
-        console.log(nuevoProducto);
-
+    app.post('/productosP', afa, (req, res) => {
+        
+        // 1. Manejo de errores de Multer
+        if (!req.files || !req.files['img'] || !req.files['ficha_p']) {
+          return res.status(400).json({ error: 'No se proporcionaron los archivos necesarios.' });
+        }
+      
+        // 2. Extraer información de las imágenes
+        const imgFilename = req.files['img'][0].filename;
+        const ficha_pFilename = req.files['ficha_p'][0].filename;
+      
+        // 3. Construir el objeto del nuevo producto
+        const nuevoProducto = {
+          ...req.body, // Datos del formulario (nombre, descripción, precio, etc.)
+          img: `/uploads/${imgFilename}`, // Ruta de la imagen principal
+          ficha_p: `/uploads/${ficha_pFilename}` // Ruta de la ficha técnica
+        };
+      
+        // 4. Guardar en la base de datos
         databaseService.crearProducto(nuevoProducto)
-        .then(() => { //despues de la escritura en la bd se muestar el lenguake
-            res.json({"mensaje": "nuevo producto"});
-        }).catch(e => { // corregido
+          .then(() => {
+            res.json({ mensaje: "Nuevo producto creado con éxito" });
+          })
+          .catch(e => {
+            res.status(500).json({ error: e.message });
+          });
+    });
+
+    app.delete('/productosP/:id', (req, res) => {
+        const { id } = req.params;
+
+        databaseService.eliminarProducto(id)
+        .then(() => {
+            res.json({"mensaje": "producto eliminado"});
+        }).catch(e => {
             res.status(500).json(e);
         });
-        
-    })
+    });
+
+    app.put('/productosP/:id', (req, res) => {
+        const { id } = req.params;
+        const updatedProducto = req.body;
+    
+        databaseService.actualizarProducto({ id, ...updatedProducto })
+        .then(() => {
+            res.json({"mensaje": "producto actualizado"});
+        }).catch(e => {
+            console.error("Error updating producto:", e);
+            res.status(500).json({ error: "Internal Server Error", details: e });
+        });
+    });
 
     //MIEMBROS DE LA EMPRESA
 

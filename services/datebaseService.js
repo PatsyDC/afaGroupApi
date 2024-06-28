@@ -156,7 +156,45 @@ const databaseService = () => {
         .where('id', idCarrito)
         .update(updatedCarrito);
     };
+
+    const actualizarCategoria = ({id, nombre, descripcion}) => {
+        return knex(table5).where({ id: id }).update({
+            nombre: nombre,
+            descripcion: descripcion
+        });
+    }
+
+    const actualizarRepuesto = ({id, img, nombre, categoria_id, descripcion, cantidad}) => {
+        return knex(table6).where({ id: id }).update({
+            img: img,
+            nombre: nombre,
+            categoria_id: categoria_id,
+            descripcion: descripcion,
+            cantidad: cantidad
+        })
+    }
+
+    const actualizarProducto = ({id, img, nombre, descripcion, precio, categoria_id, ficha_p, pdf}) => {
+        return knex(table2).where({ id: id }).update({
+            img: img,
+            nombre: nombre,
+            descripcion: descripcion,
+            precio: precio,
+            categoria_id: categoria_id,
+            ficha_p: ficha_p,
+            pdf:pdf
+        }); 
+    }
     
+
+    //eliminar
+    const eliminarCategoria = (id) => {
+        return knex(table5).where({ id: id }).del();
+    }
+
+    const eliminarProducto = (id) => {
+        return knex(table2).where({ id: id }).del();
+    }
     
 
     
@@ -164,9 +202,13 @@ const databaseService = () => {
     return{
         crearUser,
         mostrarUser,
+
         crearProducto,
         mostrarProductos,
         buscarProductoPorId,
+        actualizarProducto,
+        eliminarProducto,
+        
         crearMiembroE,
         mostrarMiembrosE,
         crearSlider,
@@ -174,6 +216,8 @@ const databaseService = () => {
         sliderDetalle,
         mostrarCategoria,
         crearCategoria,
+        actualizarCategoria,
+        eliminarCategoria,
         mostrarRepuesto,
         crearRepuesto,
         repuestoId,
