@@ -11,7 +11,7 @@ module.exports = function(app, databaseService){
             cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)); 
         }
     });
-      
+    
     const upload = multer({ storage: storage });
 
     const afa = upload.fields([
@@ -124,13 +124,13 @@ module.exports = function(app, databaseService){
         
         // 1. Manejo de errores de Multer
         if (!req.files || !req.files['img'] || !req.files['ficha_p']) {
-          return res.status(400).json({ error: 'No se proporcionaron los archivos necesarios.' });
+            return res.status(400).json({ error: 'No se proporcionaron los archivos necesarios.' });
         }
-      
+    
         // 2. Extraer información de las imágenes
         const imgFilename = req.files['img'][0].filename;
         const ficha_pFilename = req.files['ficha_p'][0].filename;
-      
+    
         // 3. Construir el objeto del nuevo producto
         const nuevoProducto = {
           ...req.body, // Datos del formulario (nombre, descripción, precio, etc.)
@@ -148,6 +148,52 @@ module.exports = function(app, databaseService){
           });
     });
 
+    app.put('/productosP/:id', afa, (req, res) => {
+        const productoId = req.params.id;
+    
+        // Verificar si hay archivos subidos
+        let imgFilename, ficha_pFilename;
+        if (req.files && req.files['img']) {
+            imgFilename = req.files['img'][0].filename;
+        }
+        if (req.files && req.files['ficha_p']) {
+            ficha_pFilename = req.files['ficha_p'][0].filename;
+        }
+    
+        // Construir el objeto del producto actualizado
+        const productoActualizado = {};
+    
+        // Agregar los datos del cuerpo de la solicitud al objeto
+        if (req.body.nombre) productoActualizado.nombre = req.body.nombre;
+        if (req.body.descripcion) productoActualizado.descripcion = req.body.descripcion;
+        if (req.body.precio) productoActualizado.precio = req.body.precio;
+        if (req.body.categoria_id) productoActualizado.categoria_id = req.body.categoria_id;
+    
+        // Agregar las rutas de los archivos si fueron proporcionados
+        if (imgFilename) {
+            productoActualizado.img = `/uploads/${imgFilename}`;
+        }
+        if (ficha_pFilename) {
+            productoActualizado.ficha_p = `/uploads/${ficha_pFilename}`;
+        }
+    
+        // Verificar si hay datos para actualizar
+        if (Object.keys(productoActualizado).length === 0) {
+            return res.status(400).json({ error: "No hay datos para actualizar" });
+        }
+    
+        // Actualizar en la base de datos
+        databaseService.actualizarProducto(productoId, productoActualizado)
+            .then(() => {
+                res.json({ mensaje: "Producto actualizado con éxito" });
+            })
+            .catch(e => {
+                res.status(500).json({ error: e.message });
+            });
+    });
+    
+    
+
     app.delete('/productosP/:id', (req, res) => {
         const { id } = req.params;
 
@@ -159,18 +205,6 @@ module.exports = function(app, databaseService){
         });
     });
 
-    app.put('/productosP/:id', (req, res) => {
-        const { id } = req.params;
-        const updatedProducto = req.body;
-    
-        databaseService.actualizarProducto({ id, ...updatedProducto })
-        .then(() => {
-            res.json({"mensaje": "producto actualizado"});
-        }).catch(e => {
-            console.error("Error updating producto:", e);
-            res.status(500).json({ error: "Internal Server Error", details: e });
-        });
-    });
 
     //MIEMBROS DE LA EMPRESA
 
@@ -245,16 +279,30 @@ module.exports = function(app, databaseService){
         });
     });
 
-    app.post('/repuestos', (req, res) => {
-        const newRepuestos = req.body;
-        console.log(newRepuestos);
-        databaseService.crearRepuesto(newRepuestos)
-        .then(() => {
-            res.json({ mensaje: "nuevo repuesto" });
-        })
-        .catch(e => {
-            res.status(500).json(e);
-        });
+    app.post('/repuestos', afa, (req, res) => {
+        
+        // 1. Manejo de errores de Multer
+        if (!req.files || !req.files['img']) {
+            return res.status(400).json({ error: 'No se proporcionaron los archivos necesarios.' });
+        }
+    
+        // 2. Extraer información de las imágenes
+        const imgFilename = req.files['img'][0].filename;
+    
+        // 3. Construir el objeto del nuevo producto
+        const nuevoRepuesto = {
+          ...req.body, // Datos del formulario (nombre, descripción, precio, etc.)
+          img: `/uploads/${imgFilename}`, // Ruta de la imagen principal
+        };
+    
+        // 4. Guardar en la base de datos
+        databaseService.crearRepuesto(nuevoRepuesto)
+            .then(() => {
+            res.json({ mensaje: "Nuevo repuesto creado con éxito" });
+            })
+            .catch(e => {
+            res.status(500).json({ error: e.message });
+            });
     });
 
     app.get('/repuestos/:id', (req, res) => {
