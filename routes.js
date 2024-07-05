@@ -359,22 +359,14 @@ module.exports = function(app, databaseService){
             return res.status(400).json({ error: "No hay datos para actualizar" });
         }
     
-        // Actualizar en la base de datos
-        actualizarRepuesto(
-            repuestoActualizado.img,
-            repuestoActualizado.nombre,
-            repuestoActualizado.categoria_id,
-            repuestoActualizado.descripcion,
-            repuestoActualizado.precio,
-            repuestoActualizado.codigo,
-            repuestoId
-        )
-        .then(() => {
-            res.json({ mensaje: "Repuesto actualizado con éxito" });
-        })
-        .catch(e => {
-            res.status(500).json({ error: e.message });
-        });
+         // Actualizar en la base de datos
+         databaseService.actualizarRepuesto(repuestoId, repuestoActualizado)
+         .then(() => {
+             res.json({ mensaje: "Repuesto actualizado con éxito" });
+         })
+         .catch(e => {
+             res.status(500).json({ error: e.message });
+         });
     });
     
     //contactanos 
@@ -453,4 +445,95 @@ module.exports = function(app, databaseService){
     
 
 
+
+    //PRODUCTOS
+
+    app.get('/articulos', (req, res) => {
+        databaseService.mostrarArticulos()
+            .then(articulos => {
+                res.json(articulos);
+            }).catch(e => {
+                res.status(500).json(e);
+            });
+    });
+    
+    app.get('/articulos/:id', (req, res) => {
+        const idArticulo = req.params.id;
+        databaseService.buscarArticuloPorId(idArticulo)
+            .then(articulo => {
+                if (!articulo) {
+                    res.status(404).json({ mensaje: 'Artículo no encontrado' });
+                } else {
+                    res.json(articulo);
+                }
+            }).catch(e => {
+                res.status(500).json({ error: e.message });
+            });
+    });
+    
+    app.post('/articulos', afa, (req, res) => {
+        // Handle Multer errors
+        if (!req.files || !req.files['img']) {
+            return res.status(400).json({ error: 'No se proporcionó la imagen necesaria.' });
+        }
+    
+        const imgFilename = req.files['img'][0].filename;
+    
+        const nuevoArticulo = {
+            ...req.body,
+            img: `/uploads/${imgFilename}`
+        };
+    
+        databaseService.crearArticulo(nuevoArticulo)
+            .then(() => {
+                res.json({ mensaje: "Nuevo artículo creado con éxito" });
+            })
+            .catch(e => {
+                res.status(500).json({ error: e.message });
+            });
+    });
+    
+    app.put('/articulos/:id', afa, (req, res) => {
+        const articuloId = req.params.id;
+    
+        let imgFilename;
+        if (req.files && req.files['img']) {
+            imgFilename = req.files['img'][0].filename;
+        }
+    
+        const articuloActualizado = {};
+    
+        if (req.body.titulo) articuloActualizado.titulo = req.body.titulo;
+        if (req.body.texto_corto) articuloActualizado.texto_corto = req.body.texto_corto;
+        if (req.body.texto_largo) articuloActualizado.texto_largo = req.body.texto_largo;
+        if (req.body.link) articuloActualizado.link = req.body.link;
+    
+        if (imgFilename) {
+            articuloActualizado.img = `/uploads/${imgFilename}`;
+        }
+    
+        if (Object.keys(articuloActualizado).length === 0) {
+            return res.status(400).json({ error: "No hay datos para actualizar" });
+        }
+    
+        databaseService.actualizarArticulo(articuloId, articuloActualizado)
+            .then(() => {
+                res.json({ mensaje: "Artículo actualizado con éxito" });
+            })
+            .catch(e => {
+                res.status(500).json({ error: e.message });
+            });
+    });
+    
+    app.delete('/articulos/:id', (req, res) => {
+        const { id } = req.params;
+    
+        databaseService.eliminarArticulo(id)
+            .then(() => {
+                res.json({ mensaje: "Artículo eliminado con éxito" });
+            })
+            .catch(e => {
+                res.status(500).json(e);
+            });
+    });
 };

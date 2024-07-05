@@ -18,6 +18,7 @@ const databaseService = () => {
     const table6 = "repuestos"
     const table7 = "contacto"
     const table8 = "carrito"
+    const table9 = "blog"
 
     // CREARRR
 
@@ -95,6 +96,15 @@ const databaseService = () => {
             cantidad: cantidad
         })
     }
+    const crearBlog = ({titulo, texto_corto, texto_largo, link, img}) =>{
+        return knex(table9).insert({
+            titulo: titulo,
+            texto_corto: texto_corto,
+            texto_largo: texto_largo,
+            link: link,
+            img:img
+        })
+    }
     //mostrar 
 
     const mostrarProductos = () => {
@@ -128,6 +138,10 @@ const databaseService = () => {
         return knex(table8).select();
     };
 
+    const mostrarBlog = () => {
+        return knex(table9).select();
+    };
+
     //detalles
     const buscarProductoPorId = (id) => {
         return knex(table2)
@@ -147,6 +161,11 @@ const databaseService = () => {
 
     const sliderDetalle = (id) => {
         return knex(table4)
+        .where('id', id)
+    }
+
+    const detalleBlog = (id) => {
+        return knex(table9)
         .where('id', id)
     }
 
@@ -188,6 +207,15 @@ const databaseService = () => {
         }); 
     }
     
+    const actualizarBlog = (titulo, texto_corto, texto_largo, link, img) => {
+        return knex(table9).where({ id: id }).update({
+            titulo:titulo,
+            texto_corto:texto_largo,
+            texto_largo : texto_largo,
+            link:link,
+            img:img
+        }); 
+    }
 
     //eliminar
     const eliminarCategoria = (id) => {
@@ -200,6 +228,10 @@ const databaseService = () => {
 
     const eliminarRepuesto = (id) => {
         return knex(table6).where({ id: id }).del();
+    }
+
+    const eliminarBlog = (id) => {
+        return knex(table9).where({ id: id }).del();
     }
     
 
@@ -236,7 +268,14 @@ const databaseService = () => {
         crearCarrito,
         mostrarCarrito,
         detalleCarrito,
-        actualizarCarrito 
+        actualizarCarrito, 
+
+
+        crearBlog,
+        mostrarBlog,
+        detalleBlog,
+        actualizarBlog,
+        eliminarBlog
     };
 };
 
