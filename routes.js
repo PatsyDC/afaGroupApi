@@ -443,13 +443,10 @@ module.exports = function(app, databaseService){
             });
     });
     
+    //NOTICIAS
 
-
-
-    //PRODUCTOS
-
-    app.get('/articulos', (req, res) => {
-        databaseService.mostrarArticulos()
+    app.get('/noticias', (req, res) => {
+        databaseService.mostrarBlog()
             .then(articulos => {
                 res.json(articulos);
             }).catch(e => {
@@ -457,9 +454,9 @@ module.exports = function(app, databaseService){
             });
     });
     
-    app.get('/articulos/:id', (req, res) => {
+    app.get('/noticias/:id', (req, res) => {
         const idArticulo = req.params.id;
-        databaseService.buscarArticuloPorId(idArticulo)
+        databaseService.detalleBlog(idArticulo)
             .then(articulo => {
                 if (!articulo) {
                     res.status(404).json({ mensaje: 'Artículo no encontrado' });
@@ -471,7 +468,7 @@ module.exports = function(app, databaseService){
             });
     });
     
-    app.post('/articulos', afa, (req, res) => {
+    app.post('/noticias', afa, (req, res) => {
         // Handle Multer errors
         if (!req.files || !req.files['img']) {
             return res.status(400).json({ error: 'No se proporcionó la imagen necesaria.' });
@@ -484,7 +481,7 @@ module.exports = function(app, databaseService){
             img: `/uploads/${imgFilename}`
         };
     
-        databaseService.crearArticulo(nuevoArticulo)
+        databaseService.crearBlog(nuevoArticulo)
             .then(() => {
                 res.json({ mensaje: "Nuevo artículo creado con éxito" });
             })
@@ -493,7 +490,7 @@ module.exports = function(app, databaseService){
             });
     });
     
-    app.put('/articulos/:id', afa, (req, res) => {
+    app.put('/noticias/:id', afa, (req, res) => {
         const articuloId = req.params.id;
     
         let imgFilename;
@@ -516,7 +513,7 @@ module.exports = function(app, databaseService){
             return res.status(400).json({ error: "No hay datos para actualizar" });
         }
     
-        databaseService.actualizarArticulo(articuloId, articuloActualizado)
+        databaseService.actualizarBlog(articuloId, articuloActualizado)
             .then(() => {
                 res.json({ mensaje: "Artículo actualizado con éxito" });
             })
@@ -525,10 +522,10 @@ module.exports = function(app, databaseService){
             });
     });
     
-    app.delete('/articulos/:id', (req, res) => {
+    app.delete('/noticias/:id', (req, res) => {
         const { id } = req.params;
     
-        databaseService.eliminarArticulo(id)
+        databaseService.eliminarBlog(id)
             .then(() => {
                 res.json({ mensaje: "Artículo eliminado con éxito" });
             })

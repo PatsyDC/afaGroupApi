@@ -184,7 +184,7 @@ const databaseService = () => {
         });
     }
 
-    const actualizarRepuesto = (img, nombre, categoria_id, descripcion, precio, codigo) => {
+    const actualizarRepuesto = (id, img, nombre, categoria_id, descripcion, precio, codigo) => {
         return knex(table6).where({ id: id }).update({
             img: img,
             nombre: nombre,
@@ -207,15 +207,16 @@ const databaseService = () => {
         }); 
     }
     
-    const actualizarBlog = (titulo, texto_corto, texto_largo, link, img) => {
+    const actualizarBlog = (id, titulo, texto_corto, texto_largo, link, img) => {
         return knex(table9).where({ id: id }).update({
-            titulo:titulo,
-            texto_corto:texto_largo,
-            texto_largo : texto_largo,
-            link:link,
-            img:img
+            titulo: titulo,
+            texto_corto: texto_corto,
+            texto_largo: texto_largo,
+            link: link,
+            img: img
         }); 
     }
+    
 
     //eliminar
     const eliminarCategoria = (id) => {
