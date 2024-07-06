@@ -330,24 +330,24 @@ module.exports = function(app, databaseService){
         });
     });
 
-    app.put('/repuestos/:id', afa, (req, res) => {
+    app.put('/repuestos/:id', upload.single('img'), (req, res) => {
         const repuestoId = req.params.id;
     
         // Verificar si hay archivos subidos
-        let imgFilename, ficha_pFilename;
-        if (req.files && req.files['img']) {
-            imgFilename = req.files['img'][0].filename;
+        let imgFilename = '';
+        if (req.file) {
+            imgFilename = req.file.filename; // Asumiendo que el middleware 'upload' asigna el nombre del archivo a req.file.filename
         }
     
         // Construir el objeto del repuesto actualizado
         const repuestoActualizado = {};
     
         // Agregar los datos del cuerpo de la solicitud al objeto
-        if (req.body.nombre) repuestoActualizado.nombre = req.body.nombre;
-        if (req.body.descripcion) repuestoActualizado.descripcion = req.body.descripcion;
-        if (req.body.precio) repuestoActualizado.precio = req.body.precio;
-        if (req.body.categoria_id) repuestoActualizado.categoria_id = req.body.categoria_id;
-        if (req.body.codigo) repuestoActualizado.codigo = req.body.codigo;
+        repuestoActualizado.nombre = req.body.nombre || '';
+        repuestoActualizado.descripcion = req.body.descripcion || '';
+        repuestoActualizado.precio = req.body.precio || '';
+        repuestoActualizado.categoria_id = req.body.categoria_id || '';
+        repuestoActualizado.codigo = req.body.codigo || '';
     
         // Agregar las rutas de los archivos si fueron proporcionados
         if (imgFilename) {
@@ -359,15 +359,16 @@ module.exports = function(app, databaseService){
             return res.status(400).json({ error: "No hay datos para actualizar" });
         }
     
-         // Actualizar en la base de datos
-         databaseService.actualizarRepuesto(repuestoId, repuestoActualizado)
-         .then(() => {
-             res.json({ mensaje: "Repuesto actualizado con éxito" });
-         })
-         .catch(e => {
-             res.status(500).json({ error: e.message });
-         });
+        // Actualizar en la base de datos
+        databaseService.actualizarRepuesto(repuestoId, repuestoActualizado)
+            .then(() => {
+                res.json({ mensaje: "Repuesto actualizado con éxito" });
+            })
+            .catch(e => {
+                res.status(500).json({ error: e.message });
+            });
     });
+    
     
     //contactanos 
 

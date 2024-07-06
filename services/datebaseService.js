@@ -77,13 +77,14 @@ const databaseService = () => {
         })
     }
 
-    const crearContacto = ({nombre, email, celular, ciudad, mensaje}) => {
+    const crearContacto = ({nombre, email, celular, ciudad, mensaje, fecha}) => {
         return knex(table7).insert({
             nombre: nombre,
             email: email,
             celular: celular,
             ciudad: ciudad,
-            mensaje:mensaje
+            mensaje:mensaje,
+            fecha: fecha
         })
     }
 
@@ -266,6 +267,7 @@ const databaseService = () => {
 
         crearContacto,
         mostrarContactanos,
+
         crearCarrito,
         mostrarCarrito,
         detalleCarrito,
